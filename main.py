@@ -3,16 +3,16 @@ from bottle_sqlite import SQLitePlugin
 
 install(SQLitePlugin(dbfile='/tmp/mybottle.db'))
 
-@route('/query/<title>')
-def show(db, title):
-        c = db.execute('SELECT title, content FROM posts WHERE title = ?', (post_id,))
+@route('/query')
+def query():
+	return template('query.tpl',title='',content='')
+
+@post('/query')
+def do_query(db):
+        title = request.forms.get('title')
+        c = db.execute('SELECT title, content FROM posts WHERE title = ?', (title,))
         row = c.fetchone()
         return template('query.tpl', title=row['title'], content=row['content'])
-
-@route('/tpltest2/<name>/<fname>')
-@view('hello_template')
-def index(name,fname):
-    return dict(name=name,fname=fname)
 
 @route('/')
 def index():
@@ -26,7 +26,7 @@ def insert():
     return template('insert.tpl')
 
 @post('/insert')
-def do_insert():
+def do_insert(db):
     title = request.forms.get('title')
     content = request.forms.get('content')
     db.execute('insert into posts values( ?,?)', (title,content))
