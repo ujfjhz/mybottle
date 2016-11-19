@@ -71,7 +71,10 @@ def index():
 
 @get('/insert') 
 def insert():
-    return template('insert.tpl')
+    if isallow():
+        return template('insert.tpl')
+    else:
+        return template('deny.tpl')
 
 @post('/insert')
 def do_insert(db):
@@ -79,7 +82,7 @@ def do_insert(db):
     content = request.forms.get('content')
     entity = Entity(title,content)
     db.add(entity)
-    return template('reinsert.tpl')
+    return template('postinsert.tpl')
 
 @get('/login') # or @route('/login')
 def login():
@@ -91,9 +94,9 @@ def do_login():
     password = request.forms.get('password')
     if check_login(username, password):
         response.set_cookie("account", username, secret='some-secret-key')
-        return "<p>Your login information was correct. You are now logged in.</p>"
+        return template("postlogin.tpl")
     else:
-        return "<p>Login failed.</p>"
+        return template("faillogin.tpl")
 
 def check_login(username, password):
     if username=='cshan' and password == 'cshan':
@@ -110,9 +113,12 @@ def server_static(filename):
 def error404(error):
     return 'Nothing here, sorry'
 
-@route('/wrong')
-def wrong():
-    redirect("/login")
+@route('/test')
+def test():
+    if isallow():
+	    return "allow"
+    else:
+	    return "deny"
 
 @route('/wrong2')
 def restricted():
@@ -123,6 +129,14 @@ def islogin():
         return True
     else:
         return False
+
+def isallow():
+    name=request.get_cookie("account", secret='some-secret-key')
+    if name == "cshan":
+        return True
+    else:
+        return False
+
 
 @route('/<filename:path>')
 def send_static(filename):

@@ -31,7 +31,7 @@ $("#queryform").submit(function(event){
 });
 
 $("#insertbt").click(function(){
-window.open('/insert', '_blank');
+window.open('/insert', '_blank').focus();
 }
 );
 
