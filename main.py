@@ -1,18 +1,66 @@
 from bottle import route, run, template, get, post, request, static_file, error, redirect, abort, response, view, install
-from bottle_sqlite import SQLitePlugin
+from bottle.ext import sqlalchemy
+import os
+import json
+from sqlalchemy import create_engine, Column, Integer, Sequence, String
+from sqlalchemy.ext.declarative import declarative_base
 
-install(SQLitePlugin(dbfile='/tmp/mybottle.db'))
+Base = declarative_base()
+engine = create_engine('sqlite:////tmp/mybottlenew.db', echo=True)
+
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(path)
+
+install(sqlalchemy.Plugin(
+    engine, # SQLAlchemy engine created with create_engine function.
+    Base.metadata, # SQLAlchemy metadata, required only if create=True.
+    keyword='db', # Keyword used to inject session database in a route (default 'db').
+    create=True, # If it is true, execute `metadata.create_all(engine)` when plugin is applied (default False).
+    commit=True, # If it is true, plugin commit changes after route is executed (default True).
+    use_kwargs=False # If it is true and keyword is not defined, plugin uses **kwargs argument to inject session database (default False).
+))
+
+class Entity(Base):
+    __tablename__ = 'entity'
+    id = Column(Integer, Sequence('id_seq'), primary_key=True)
+    title = Column(String(50))
+    content = Column(String(50))
+
+    def __init__(self, title, content):
+        self.title = title
+        self.content = content
+
+    def __repr__(self):
+        return "<Entity('%d', '%s', '%s')>" % (self.id, self.title, self.content)
+
 
 @route('/query')
 def query():
-	return template('query.tpl',title='',content='')
+	return template('query.tpl')
 
 @post('/query')
 def do_query(db):
-        title = request.forms.get('title')
-        c = db.execute('SELECT title, content FROM posts WHERE title = ?', (title,))
-        row = c.fetchone()
-        return template('query.tpl', title=row['title'], content=row['content'])
+    title = request.forms.get('title')
+
+    draw = request.forms.get('draw')
+    start = request.forms.get('start')
+    length = request.forms.get('length')
+
+    recordsTotal = db.query(Entity).filter_by(title=title).count()
+    recordsFiltered = recordsTotal
+
+    entities = db.query(Entity).filter_by(title=title).offset(start).limit(length)
+    data=[]
+    for entity in entities:
+        row={}
+        row['id']=entity.id
+        row['title']=entity.title
+        row['content']=entity.content
+	data.append(row)
+
+    result={"draw":draw,"recordsTotal":recordsTotal,"recordsFiltered":recordsFiltered,"data":data}
+    resultJson=json.dumps(result)
+    return resultJson
 
 @route('/')
 def index():
@@ -29,8 +77,9 @@ def insert():
 def do_insert(db):
     title = request.forms.get('title')
     content = request.forms.get('content')
-    db.execute('insert into posts values( ?,?)', (title,content))
-    return 'done'
+    entity = Entity(title,content)
+    db.add(entity)
+    return template('reinsert.tpl')
 
 @get('/login') # or @route('/login')
 def login():
@@ -74,5 +123,9 @@ def islogin():
         return True
     else:
         return False
+
+@route('/<filename:path>')
+def send_static(filename):
+    return static_file(filename, root=dir_path+'/'+'assets/') 
 
 run(host='localhost', port=8787, debug=True, reloader=True)

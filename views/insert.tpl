@@ -1,7 +1,8 @@
 % include('header.tpl')
 <form action="/insert" method="post">
-    Text: <input name="title" type="text" />
-    Content: <input name="content" type="text" />
-    <input value="insert" type="submit" />
+请输入：
+    <p><label class="field"> Text:</label> <input name="title" type="text" /></p>
+    <p><label class="field"> Content:</label> <input name="content" type="text" /></p>
+    <p><input value="insert" type="submit" /></p>
 </form>
 % include('footer.tpl') 

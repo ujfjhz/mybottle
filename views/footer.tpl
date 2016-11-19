@@ -1,1 +1,2 @@
-<footer>--------------------------yubian-tech------------------------</footer>
+<hr>
+<footer>@yubian-tech<footer>

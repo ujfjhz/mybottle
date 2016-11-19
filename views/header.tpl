@@ -1,1 +1,2 @@
-<header>======================information system========================</header>
+logo | islogin
+<hr>
