@@ -15,6 +15,7 @@ dtJson={
         }],
         destroy: true,
 	searching: false,
+//	select: true,
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -34,12 +35,25 @@ dtJson={
             { "data": "content" }
         ]
     }
-$('#example').DataTable(dtJson);
+var table=$('#example').DataTable(dtJson);
 
 $("#queryform").submit(function(event){
     event.preventDefault();
-    $('#example').DataTable(dtJson);
+    table=$('#example').DataTable(dtJson);
 });
+
+$('#example tbody').on( 'click', 'tr', function () {
+    if ( $(this).hasClass('selected') ) {
+        $(this).removeClass('selected');
+    }
+    else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+} );
+$('#deletebt').click( function () {
+    table.row('.selected').remove().draw( false );
+} );
 
 $("#insertbt").click(function(){
 window.open('/insert', '_blank').focus();
@@ -58,7 +72,9 @@ window.open('/insert', '_blank').focus();
     <input value="Query" type="submit" /></p>
 </form>
 
+<button id="querybt" type="button" class="right">query</button>
 <button id="insertbt" type="button" class="right">insert</button>
+<button id="deletebt" type="button" class="right">delete</button>
 <div class="center" > 查询结果如下 </div>
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
