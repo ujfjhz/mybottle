@@ -2,6 +2,17 @@
 <script>
 $(document).ready(function(){
 dtJson={
+        dom: 'Blfrtip',
+	buttons:[
+	{
+            extend: 'excelFlash',
+            text: '下载为Excel',
+            exportOptions: {
+                modifier: {
+                    search: 'none'
+                }
+            }
+        }],
         destroy: true,
 	searching: false,
         "processing": true,
@@ -48,7 +59,7 @@ window.open('/insert', '_blank').focus();
 </form>
 
 <button id="insertbt" type="button" class="right">insert</button>
-<div class="center"> 查询结果如下 </div>
+<div class="center" > 查询结果如下 </div>
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
