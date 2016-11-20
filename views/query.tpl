@@ -12,10 +12,27 @@ dtJson={
                     search: 'none'
                 }
             }
-        }],
+        },
+ 	{
+            extend: 'selectedSingle',
+            text: '查看所选记录',
+            action: function ( e, dt, button, config ) {
+                console.log( dt.row( { selected: true } ).data() );
+            }
+        },
+ 	{
+            extend: 'selectedSingle',
+            text: '删除所选记录',
+            action: function ( e, dt, button, config ) {
+                console.log( dt.row( { selected: true } ).data() );
+            }
+        }
+	],
         destroy: true,
 	searching: false,
-//	select: true,
+	select: {
+            style: 'single'
+        },
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -42,19 +59,6 @@ $("#queryform").submit(function(event){
     table=$('#example').DataTable(dtJson);
 });
 
-$('#example tbody').on( 'click', 'tr', function () {
-    if ( $(this).hasClass('selected') ) {
-        $(this).removeClass('selected');
-    }
-    else {
-        table.$('tr.selected').removeClass('selected');
-        $(this).addClass('selected');
-    }
-} );
-$('#deletebt').click( function () {
-    table.row('.selected').remove().draw( false );
-} );
-
 $("#insertbt").click(function(){
 window.open('/insert', '_blank').focus();
 }
@@ -72,9 +76,7 @@ window.open('/insert', '_blank').focus();
     <input value="Query" type="submit" /></p>
 </form>
 
-<button id="querybt" type="button" class="right">query</button>
 <button id="insertbt" type="button" class="right">insert</button>
-<button id="deletebt" type="button" class="right">delete</button>
 <div class="center" > 查询结果如下 </div>
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
