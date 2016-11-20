@@ -38,14 +38,17 @@ window.open('/insert', '_blank').focus();
 }
 )
 </script>
-<form id="queryform" method="POST" action="/query">
-    title: <input name="title" type="text" />
-    <input value="Query" type="submit" />
+<form id="queryform" method="POST" action="/query" class="border">
+    <p><label class="field"> title:</label> <input name="title" type="text" />
+    <label class="field"> content:</label> <input name="content" type="text" />
+    <label class="field"> column1:</label> <input name="column1" type="text" /></p>
+    <p><label class="field"> column2:</label> <input name="column2" type="text" />
+    <label class="field"> column3:</label> <input name="column3" type="text" />
+    <input value="Query" type="submit" /></p>
 </form>
-<br>
-<button id="insertbt" type="button">insert</button>
-<hr>
-<p> the results  is:</p>
+
+<button id="insertbt" type="button" class="right">insert</button>
+<div class="center"> 查询结果如下 </div>
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
