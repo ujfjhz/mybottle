@@ -24,7 +24,18 @@ dtJson={
             extend: 'selectedSingle',
             text: '删除所选记录',
             action: function ( e, dt, button, config ) {
-                console.log( dt.row( { selected: true } ).data() );
+                console.log( dt.row( { selected: true } ).data().id );
+		$.ajax({url: "/delete",
+			data: {id:dt.row( { selected: true } ).data().id},
+			type: "POST",
+			success: function(){
+				dt.draw( false );
+		    	},
+			error: function(){
+				alert("delete fail,please retry");
+			}
+		});
+
             }
         }
 	],

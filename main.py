@@ -62,6 +62,12 @@ def do_query(db):
     resultJson=json.dumps(result)
     return resultJson
 
+@post('/delete')
+def do_delete(db):
+    id = request.forms.get('id')
+    db.query(Entity).filter_by(id=id).delete()
+
+
 @route('/')
 def index():
     if islogin():
