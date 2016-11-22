@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/jquery.dataTables.min.js" charset="utf8"></script>
     <script src="js/dataTables.buttons.min.js" charset="utf8"></script>
     <script src="js/buttons.flash.min.js" charset="utf8"></script>
